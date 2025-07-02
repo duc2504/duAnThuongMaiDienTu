@@ -1,0 +1,40 @@
+package com.example.duanthuongmaidientu.Model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@Table(name = "BienTheSanPham")
+public class BienThe {
+
+    @Column(insertable = false, updatable = false)
+    private Integer STT; // tự tăng ở DB, không chỉnh sửa từ Java
+
+
+    @Id
+    private String maSKU;
+
+
+    private BigDecimal gia;
+
+    private Integer soLuong;
+
+
+    private Integer TrangThai;
+    @ManyToOne
+    @JoinColumn(name = "maSanPham")
+    private SanPham sanPham;
+
+    @OneToMany(mappedBy = "bienThe")
+    private List<ThuocTinh> thuocTinhs;
+}

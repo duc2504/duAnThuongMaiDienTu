@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Xác nhận đơn hàng</title>
+</head>
+<body>
+<h2>Thông tin đơn hàng</h2>
+
+<div>
+    <p><strong>Tên sản phẩm:</strong> <span th:text="${sanPham.tenSanPham}"></span></p>
+    <p><strong>Thương hiệu:</strong> <span th:text="${sanPham.thuongHieu}"></span></p>
+    <p><strong>Mã SKU:</strong> <span th:text="${bienThe.maSKU}"></span></p>
+    <p><strong>Giá:</strong> <span th:text="${bienThe.gia} + ' VNĐ'"></span></p>
+    <p><strong>Số lượng mua:</strong> <span th:text="${soLuong}"></span></p>
+    <p><strong>Thành tiền:</strong>
+        <span th:text="${#numbers.formatDecimal(bienThe.gia * soLuong, 0, 'POINT', 2, 'POINT')} + ' VNĐ'"></span>
+    </p>
+</div>
+
+<!-- Nếu bạn có thuộc tính -->
+<div th:if="${thuocTinhs != null}">
+    <p><strong>Thuộc tính:</strong></p>
+    <ul>
+        <li th:each="tt : ${thuocTinhs}" th:text="${tt.tenThuocTinh}"></li>
+    </ul>
+</div>
+
+<form th:action="@{/muahang/dat}" method="post">
+    <!-- Ẩn mã SKU và số lượng để đẩy sang server (phòng trường hợp không giữ trong session) -->
+    <input type="hidden" name="maSKU" th:value="${bienThe.maSKU}" />
+    <input type="hidden" name="soLuong" th:value="${soLuong}" />
+
+    <div>
+        <label>Địa chỉ nhận hàng:</label>
+        <input type="text" name="diaChi" required>
+    </div>
+
+    <div>
+        <label>Số điện thoại:</label>
+        <input type="text" name="soDienThoai" required>
+    </div>
+
+    <div>
+        <label>Phương thức thanh toán:</label>
+        <select name="phuongThucThanhToan" required>
+            <option value="COD">Thanh toán khi nhận</option>
+            <option value="VNPAY">VNPAY</option>
+        </select>
+    </div>
+
+    <button type="submit">Xác nhận đơn hàng</button>
+</form>
+
+</body>
+</html>

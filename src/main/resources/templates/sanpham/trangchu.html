@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách Sản phẩm</title>
+  <style>
+    .product-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .product-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      width: 220px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+
+    .product-card:hover {
+      transform: scale(1.02);
+    }
+
+    .product-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .product-desc {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .product-actions {
+      margin-top: 10px;
+    }
+
+    .product-actions a {
+      margin-right: 10px;
+      text-decoration: none;
+      color: #007BFF;
+    }
+
+    .pagination {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+<h1>Danh sách Sản phẩm</h1>
+
+<form th:action="@{/sanpham/search}" method="get">
+  <input type="text" name="tenSanPham" th:value="${searchName}" placeholder="Tìm theo tên">
+  <button type="submit">Tìm kiếm</button>
+  <a th:if="${searchMode}" th:href="@{/sanpham}">X</a>
+</form>
+
+<a th:href="@{/sanpham/add}">Thêm sản phẩm mới</a>
+
+<div class="product-grid">
+  <div class="product-card-wrapper" th:each="sp : ${sanpham}">
+    <a th:href="@{'/thuoctinh?sanphamId=' + ${sp.maSanPham}}"
+       style="text-decoration: none; color: inherit;">
+      <div class="product-card">
+        <div class="product-title" th:text="${sp.tenSanPham}"></div>
+        <div class="product-desc" th:text="${sp.moTa}"></div>
+        <div class="product-desc" th:text="${sp.giaHienThi}"></div>
+        <div>
+          <strong>Danh mục:</strong>
+          <span th:text="${sp.danhMuc != null ? sp.danhMuc.tenDanhMuc : 'Không có'}"></span>
+        </div>
+        <div class="product-actions">
+          <span style="color: #888;">Nhấn để xem chi tiết</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+
+
+<div class="pagination">
+  <span>Trang: </span>
+  <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+    <a th:href="@{'/sanpham?page=' + ${i}}" th:text="${i + 1}"
+       th:classappend="${i == currentPage} ? 'active' : ''">1</a>
+    <span th:if="${i < totalPages - 1}">|</span>
+  </span>
+</div>
+
+</body>
+</html>

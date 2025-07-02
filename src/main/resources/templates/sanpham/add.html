@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Thêm sản phẩm</title>
+</head>
+<body>
+<h1>Thêm sản phẩm</h1>
+
+<form th:action="@{/sanpham/add}" th:object="${sanpham}" method="post">
+  <label>Tên sản phẩm:</label>
+  <input type="text" th:field="*{tenSanPham}"/><br>
+
+  <label>Mô tả:</label>
+  <input type="text" th:field="*{moTa}"/><br>
+
+  <label>Danh mục:</label>
+  <select th:field="*{danhMuc.maDanhMuc}">
+    <option value="">--Chọn danh mục--</option>
+    <option th:each="dm : ${danhmuc}" th:value="${dm.maDanhMuc}" th:text="${dm.tenDanhMuc}"></option>
+  </select><br>
+
+  <button type="submit">Thêm</button>
+  <a th:href="@{/sanpham}">Quay lại</a>
+</form>
+
+</body>
+</html>
