@@ -38,4 +38,15 @@ public class DonHang {
 
     @OneToMany(mappedBy = "donHang", cascade = CascadeType.ALL)
     private List<DonHangChiTiet> chiTietDonHangs;
+
+
+    @Transient
+    public String getGiaHienThi() {
+        if (tongTien == null) return "0 đ";
+        java.text.DecimalFormat formatter = new java.text.DecimalFormat("#,###");
+        formatter.setGroupingUsed(true);
+        formatter.setGroupingSize(3);
+        // Thay dấu phẩy bằng dấu chấm
+        return formatter.format(tongTien).replace(",", ".") + " đ";
+    }
 }

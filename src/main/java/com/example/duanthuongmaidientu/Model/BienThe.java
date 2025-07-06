@@ -37,4 +37,14 @@ public class BienThe {
 
     @OneToMany(mappedBy = "bienThe")
     private List<ThuocTinh> thuocTinhs;
+
+    @Transient
+    public String getGiaHienThi() {
+        if (gia == null) return "0 đ";
+        java.text.DecimalFormat formatter = new java.text.DecimalFormat("#,###");
+        formatter.setGroupingUsed(true);
+        formatter.setGroupingSize(3);
+        // Thay dấu phẩy bằng dấu chấm
+        return formatter.format(gia).replace(",", ".") + " đ";
+    }
 }

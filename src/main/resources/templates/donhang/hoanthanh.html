@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Đặt hàng thành công</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h2>✅ Đặt hàng thành công!</h2>
+
+<p>Mã đơn hàng: <b th:text="${donHang.maDonHang}"></b></p>
+<p>Ngày đặt: <span th:text="${donHang.ngayDat}"></span></p>
+<p>Tổng tiền: <span th:text="${#numbers.formatDecimal(donHang.tongTien, 0, 'COMMA', '.', 'đ')}"></span></p>
+
+<a href="/sanpham">Tiếp tục mua sắm</a>
+</body>
+</html>

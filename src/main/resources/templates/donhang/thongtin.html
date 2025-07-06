@@ -1,56 +1,88 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <title>Thông tin đơn hàng</title>
     <meta charset="UTF-8">
-    <title>Xác nhận đơn hàng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
-<h2>Thông tin đơn hàng</h2>
+<body class="container p-5">
+<h2 class="mb-4">Thông tin đơn hàng</h2>
 
-<div>
-    <p><strong>Tên sản phẩm:</strong> <span th:text="${sanPham.tenSanPham}"></span></p>
-    <p><strong>Thương hiệu:</strong> <span th:text="${sanPham.thuongHieu}"></span></p>
-    <p><strong>Mã SKU:</strong> <span th:text="${bienThe.maSKU}"></span></p>
-    <p><strong>Giá:</strong> <span th:text="${bienThe.gia} + ' VNĐ'"></span></p>
-    <p><strong>Số lượng mua:</strong> <span th:text="${soLuong}"></span></p>
-    <p><strong>Thành tiền:</strong>
-        <span th:text="${#numbers.formatDecimal(bienThe.gia * soLuong, 0, 'POINT', 2, 'POINT')} + ' VNĐ'"></span>
-    </p>
-</div>
+<form th:action="@{/donhang/dat}" method="post">
+    <!-- Ảnh sản phẩm và thông tin -->
+    <div class="row mb-4">
+        <div class="col-md-4 text-center">
+            <img th:src="${imageList[0]}" class="img-fluid border" alt="Ảnh sản phẩm" style="max-height: 300px; object-fit: contain;">
+        </div>
+        <div class="col-md-8">
+            <h4 th:text="${bienThe.sanPham.tenSanPham}">Tên sản phẩm</h4>
+            <p>Mã SKU: <span th:text="${bienThe.maSKU}"></span></p>
+            <p>Giá: <span id="giaDonVi" th:text="${bienThe.giaHienThi}"   th:data-gia="${bienThe.gia}"></span> đ</p>
 
-<!-- Nếu bạn có thuộc tính -->
-<div th:if="${thuocTinhs != null}">
-    <p><strong>Thuộc tính:</strong></p>
-    <ul>
-        <li th:each="tt : ${thuocTinhs}" th:text="${tt.tenThuocTinh}"></li>
-    </ul>
-</div>
+            <div class="d-flex align-items-center mt-3">
+                <label class="me-2">Số lượng:</label>
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="decreaseQty()">-</button>
+                <input type="number" id="soLuongInput" name="soLuong" class="form-control text-center mx-2" style="width: 60px;"
+                       th:value="${soLuong}" min="1" onchange="updateTongTien()">
+                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="increaseQty()">+</button>
+            </div>
 
-<form th:action="@{/muahang/dat}" method="post">
-    <!-- Ẩn mã SKU và số lượng để đẩy sang server (phòng trường hợp không giữ trong session) -->
-    <input type="hidden" name="maSKU" th:value="${bienThe.maSKU}" />
-    <input type="hidden" name="soLuong" th:value="${soLuong}" />
+            <p class="mt-3"><strong>Tổng tiền:</strong>
+                <span id="tongTien" > </span>
+            </p>
+        </div>
+    </div>
 
-    <div>
+    <!-- Ẩn mã SKU -->
+    <input type="hidden" name="maSKU" th:value="${bienThe.maSKU}">
+
+    <!-- Thông tin giao hàng -->
+    <div class="mb-3">
         <label>Địa chỉ nhận hàng:</label>
-        <input type="text" name="diaChi" required>
+        <input type="text" name="diaChi" class="form-control" required>
     </div>
 
-    <div>
+    <div class="mb-3">
         <label>Số điện thoại:</label>
-        <input type="text" name="soDienThoai" required>
+        <input type="text" name="sdt" class="form-control" required>
     </div>
 
-    <div>
+    <div class="mb-4">
         <label>Phương thức thanh toán:</label>
-        <select name="phuongThucThanhToan" required>
-            <option value="COD">Thanh toán khi nhận</option>
-            <option value="VNPAY">VNPAY</option>
+        <select name="pttt" class="form-control">
+            <option value="COD">Thanh toán khi nhận hàng</option>
+            <option value="BANK">Chuyển khoản ngân hàng</option>
         </select>
     </div>
 
-    <button type="submit">Xác nhận đơn hàng</button>
+    <button type="submit" class="btn btn-primary">Xác nhận đặt hàng</button>
 </form>
+
+<script>
+    function updateTongTien() {
+        const gia = parseInt(document.getElementById("giaDonVi").getAttribute("data-gia")); // dùng giá gốc (130000)
+        const soLuong = parseInt(document.getElementById("soLuongInput").value);
+        const tong = gia * soLuong;
+        document.getElementById("tongTien").innerText = tong.toLocaleString('vi-VN') + ' đ'; // hiển thị 520.000 đ
+    }
+
+
+    function increaseQty() {
+        const input = document.getElementById("soLuongInput");
+        input.value = parseInt(input.value) + 1;
+        updateTongTien();
+    }
+
+    function decreaseQty() {
+        const input = document.getElementById("soLuongInput");
+        if (parseInt(input.value) > 1) {
+            input.value = parseInt(input.value) - 1;
+            updateTongTien();
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", updateTongTien);
+</script>
 
 </body>
 </html>

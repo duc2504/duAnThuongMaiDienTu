@@ -45,4 +45,9 @@ public class Service_BienThe {
         return repository_bienThe.findBySanPham_MaSanPham(maSanPham);
     }
 
+
+    public Optional<BienThe> getBienTheBySKU(String maSKU) {
+        return repository_bienThe.findById(maSKU);
+    }
+
 }
