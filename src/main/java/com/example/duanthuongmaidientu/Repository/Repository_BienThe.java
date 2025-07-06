@@ -12,4 +12,8 @@ public interface Repository_BienThe extends JpaRepository<BienThe, String> {
     BienThe findByMaSKU(String maSKU);  //
 
 
+
+
+
+
 }

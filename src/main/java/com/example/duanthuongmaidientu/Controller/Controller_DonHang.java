@@ -17,19 +17,19 @@ import java.util.List;
 @RequestMapping("/donhang")
 public class Controller_DonHang {
 
-    private final Repository_DonHang repositoryDonHang;
-
-    @GetMapping("/list")
-    public String getDonHangByUserId(HttpSession session, Model model) {
-        Users currentUser = (Users) session.getAttribute("currentUser");
-
-        if (currentUser == null) {
-            return "redirect:/login"; // nếu chưa login thì chuyển hướng
-        }
-
-        List<DonHang> danhSachDonHang = repositoryDonHang.findByUser(currentUser);
-        model.addAttribute("donHangs", danhSachDonHang);
-
-        return "donhang/donHangHienTai"; // Trang hiển thị danh sách đơn hàng
-    }
+//    private final Repository_DonHang repositoryDonHang;
+//
+//    @GetMapping("/list")
+//    public String getDonHangByUserId(HttpSession session, Model model) {
+//        Users currentUser = (Users) session.getAttribute("currentUser");
+//
+//        if (currentUser == null) {
+//            return "redirect:/login"; // nếu chưa login thì chuyển hướng
+//        }
+//
+//        List<DonHang> danhSachDonHang = repositoryDonHang.findByUser(currentUser);
+//        model.addAttribute("donHangs", danhSachDonHang);
+//
+//        return "donhang/donHangHienTai"; // Trang hiển thị danh sách đơn hàng
+//    }
 }

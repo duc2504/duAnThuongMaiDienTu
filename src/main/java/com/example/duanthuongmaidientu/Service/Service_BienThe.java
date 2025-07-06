@@ -41,5 +41,8 @@ public class Service_BienThe {
         return repository_bienThe.findBySanPham_MaSanPham(maSanPham);
     }
 
+    public List<BienThe> getBienTheBySanPham(Integer maSanPham) {
+        return repository_bienThe.findBySanPham_MaSanPham(maSanPham);
+    }
 
 }

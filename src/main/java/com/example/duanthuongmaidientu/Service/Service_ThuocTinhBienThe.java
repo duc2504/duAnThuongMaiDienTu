@@ -32,16 +32,16 @@ public class Service_ThuocTinhBienThe {
     public void delete(Integer id) {
         repository_thuocTinh.deleteById(id);
     }
-    public List<ThuocTinhBienThe> getByMaSanPham(Integer maSanPham) {
-        return repository_thuocTinh.findByMaSanPham(maSanPham);
-    }
-
-    public List<ThuocTinhBienThe> getByMaSKU(String maSKU) {
-        return repository_thuocTinh.findByBienThe_MaSKU(maSKU);
-    }
-
-
-    public List<ThuocTinhBienThe> findByMaSKU(String maSKU) {
-        return repository_thuocTinh.findByBienThe_MaSKU(maSKU);
-    }
+//    public List<ThuocTinhBienThe> getByMaSanPham(Integer maSanPham) {
+//        return repository_thuocTinh.findByMaSanPham(maSanPham);
+//    }
+//
+//    public List<ThuocTinhBienThe> getByMaSKU(String maSKU) {
+//        return repository_thuocTinh.findByBienThe_MaSKU(maSKU);
+//    }
+//
+//
+//    public List<ThuocTinhBienThe> findByMaSKU(String maSKU) {
+//        return repository_thuocTinh.findByBienThe_MaSKU(maSKU);
+//    }
 }

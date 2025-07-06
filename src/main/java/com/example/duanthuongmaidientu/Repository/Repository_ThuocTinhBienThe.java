@@ -12,11 +12,11 @@ import java.util.List;
 
 public interface  Repository_ThuocTinhBienThe extends JpaRepository<ThuocTinhBienThe , Integer> {
 
-    List<ThuocTinhBienThe> findByBienThe_MaSKU(String maSKU);
-   // ✅ Truy cập qua object BienThe
+//    List<ThuocTinhBienThe> findByBienThe_MaSKU(String maSKU);
+//   // ✅ Truy cập qua object BienThe
 
 
 
-    @Query("SELECT t FROM ThuocTinhBienThe t WHERE t.bienThe.sanPham.maSanPham = :maSanPham")
-    List<ThuocTinhBienThe> findByMaSanPham(@Param("maSanPham") Integer maSanPham);
+//    @Query("SELECT t FROM ThuocTinhBienThe t WHERE t.bienThe.sanPham.maSanPham = :maSanPham")
+//    List<ThuocTinhBienThe> findByMaSanPham(@Param("maSanPham") Integer maSanPham);
 }

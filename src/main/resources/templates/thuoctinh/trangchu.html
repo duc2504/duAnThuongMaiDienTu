@@ -40,11 +40,9 @@
 
 <div class="container">
   <div class="row">
+    <!-- Cột ảnh sản phẩm -->
     <div class="col-md-6 text-center">
-      <!-- Ảnh chính lấy từ ảnh đầu tiên trong danh sách -->
       <img id="mainImage" th:src="${imageList[0]}" class="img-fluid border mb-3" alt="Ảnh chính">
-
-      <!-- Danh sách ảnh thumbnail -->
       <div class="d-flex justify-content-center flex-wrap">
         <div class="thumb"
              th:each="img, iterStat : ${imageList}"
@@ -55,79 +53,95 @@
       </div>
     </div>
 
-
-    <!-- Cột thuộc tính biến thể -->
+    <!-- Cột chọn biến thể -->
     <div class="col-md-6">
       <h2>Chọn biến thể</h2>
-      <div th:each="tt : ${thuocTinhs}">
-        <button type="button"
-                class="btn btn-outline-secondary variant-btn"
-                th:text="${tt.tenThuocTinh}"
-                th:data-sku="${tt.bienThe.maSKU}"
-                th:data-gia="${tt.bienThe.gia}"
-                onclick="selectVariant(this)">
-        </button>
+
+      <div th:each="entry : ${groupedThuocTinh}">
+        <div><strong th:text="${entry.key}"></strong></div>
+        <div>
+          <button type="button"
+                  class="btn btn-outline-secondary variant-btn me-1 mb-1"
+                  th:each="tenBienThe : ${entry.value}"
+                  th:text="${tenBienThe}">
+          </button>
+        </div>
       </div>
 
+      <div class="mt-3">
+        <strong>Giá gốc:</strong>
+        <span id="gia-san-pham" th:text="${sanPham.getGiaHienThi()} + ' VNĐ'"></span>
+      </div>
 
-
-      <div class="mt-4">
-        <strong>Đơn giá:</strong> <span id="skuText">Chưa chọn</span>
-
+      <div class="mt-2">
+        <strong>Đã chọn:</strong>
+        <span id="thuoc-tinh-da-chon">Chưa chọn</span>
       </div>
     </div>
   </div>
-  <form th:action="@{/muahang/tam}" method="post" onsubmit="return validateOrder()">
-    <!-- Hidden SKU được JS gán khi chọn biến thể -->
-    <input type="hidden" name="maSKU" id="skuInput" />
-
-    <div class="mb-3">
-      <label>Số lượng:</label>
-      <input type="number" name="soLuong" class="form-control" min="1" value="1" required>
-    </div>
-
-    <button type="submit" class="btn btn-success">Đặt hàng</button>
-  </form>
-
 
   <a th:href="@{/sanpham}" class="btn btn-secondary mt-5">Quay lại sản phẩm</a>
 </div>
 
 <script>
+  // Đổi ảnh chính khi chọn thumbnail
   function changeImage(src, el) {
     document.getElementById("mainImage").src = src;
     document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
   }
 
-  function selectVariant(button) {
-    // Xóa trạng thái active cũ và set active mới
-    document.querySelectorAll('.variant-btn').forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-
-    // Lấy giá trị SKU và giá
-    const sku = button.getAttribute("data-sku");
-    const gia = button.getAttribute("data-gia");
-
-    // Gán vào hidden input
-    document.getElementById("skuInput").value = sku;
-
-    // Hiển thị giá lên giao diện
-    const formattedGia = new Intl.NumberFormat('vi-VN').format(gia);
-    document.getElementById("skuText").textContent = formattedGia + " đ";
-  }
-
-
   function validateOrder() {
-    const sku = document.getElementById("skuInput").value;
+    const sku = document.getElementById("skuInput")?.value;
     if (!sku) {
       alert("Vui lòng chọn biến thể sản phẩm!");
       return false;
     }
     return true;
   }
-</script>
 
+  // Biến thể được truyền từ server
+  const bienTheList = /*[[${bienTheList}]]*/ [];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const selectedValues = {};
+
+    document.querySelectorAll(".variant-btn").forEach(btn => {
+      const groupName = btn.closest("div").previousElementSibling.innerText.trim();
+
+      btn.addEventListener("click", function () {
+        btn.parentElement.querySelectorAll(".variant-btn").forEach(b => b.classList.remove("active"));
+        this.classList.add("active");
+
+        selectedValues[groupName] = this.innerText.trim();
+        updatePrice();
+      });
+    });
+
+    function updatePrice() {
+      const matched = bienTheList.find(bt =>
+              Object.entries(selectedValues).every(([k, v]) =>
+                      bt.thuocTinhBienThes.some(ttbt =>
+                              ttbt.thuocTinh.tenThuocTinh === k && ttbt.tenThuocTinhBienThe === v
+                      )
+              )
+      );
+
+      const giaEl = document.getElementById("gia-san-pham");
+      if (matched) {
+        giaEl.innerText = matched.gia.toLocaleString() + " VNĐ";
+      } else {
+        giaEl.innerText = "Không tìm thấy giá phù hợp";
+      }
+
+      // Hiển thị thuộc tính đã chọn
+      const selectedText = Object.entries(selectedValues)
+              .map(([k, v]) => `${k}: ${v}`)
+              .join(", ");
+      document.getElementById("thuoc-tinh-da-chon").innerText = selectedText || "Chưa chọn";
+    }
+  });
+</script>
 
 </body>
 </html>
