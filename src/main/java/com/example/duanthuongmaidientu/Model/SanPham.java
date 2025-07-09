@@ -31,6 +31,8 @@ public class SanPham {
 
     private BigDecimal gia;
 
+    private Integer trangThai ;
+
     @ManyToOne
     @JoinColumn(name = "maDanhMuc")
     private DanhMuc danhMuc;

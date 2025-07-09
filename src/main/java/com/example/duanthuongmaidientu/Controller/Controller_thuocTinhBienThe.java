@@ -34,7 +34,8 @@ public class Controller_thuocTinhBienThe {
                 "/images/sanpham" + maSanPham + "_5.png"
         );
         model.addAttribute("imageList", imageList);
-
+        SanPham sanPhamName = service_sanPham.getOne(maSanPham) ;
+        model.addAttribute("nameSP" , sanPhamName);
         // Group thuộc tính theo key
         List<ThuocTinh> thuocTinhList = service_thuocTinh.getThuocTinhBySanPham(maSanPham);
         Map<String, Set<String>> grouped = new LinkedHashMap<>();

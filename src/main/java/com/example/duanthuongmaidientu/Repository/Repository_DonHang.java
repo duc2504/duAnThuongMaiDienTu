@@ -11,6 +11,8 @@ public interface Repository_DonHang extends JpaRepository<DonHang, Integer> {
 
 
 
-    List<DonHang> findByUser(Users user);
+
+
+    List<DonHang> findByUser_IdAndTrangThai(Integer userId, Integer trangThai);
 }
 

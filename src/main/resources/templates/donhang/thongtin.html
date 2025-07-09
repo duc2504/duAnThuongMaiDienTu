@@ -17,6 +17,17 @@
         <div class="col-md-8">
             <h4 th:text="${bienThe.sanPham.tenSanPham}">Tên sản phẩm</h4>
             <p>Mã SKU: <span th:text="${bienThe.maSKU}"></span></p>
+           
+            <ul>
+                <li th:each="tt : ${thuocTinhs}">
+                    <b th:text="${tt.tenThuocTinh}"></b>:
+                    <span th:each="ttbt : ${tt.thuocTinhBienTheList}"
+                          th:text="${ttbt.tenThuocTinhBienThe}"></span>
+                </li>
+            </ul>
+
+
+
             <p>Giá: <span id="giaDonVi" th:text="${bienThe.giaHienThi}"   th:data-gia="${bienThe.gia}"></span> đ</p>
 
             <div class="d-flex align-items-center mt-3">
@@ -56,6 +67,8 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Xác nhận đặt hàng</button>
+
+    <a th:href="@{/sanpham}" class="btn btn-secondary mt-5">Hủy đặt hàng</a>
 </form>
 
 <script>

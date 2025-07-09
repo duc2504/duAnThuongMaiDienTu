@@ -47,19 +47,26 @@
     .pagination {
       margin-top: 20px;
     }
+
+    .pagination a.active {
+      font-weight: bold;
+      color: red;
+    }
   </style>
 </head>
 <body>
 <h1>Danh sách Sản phẩm</h1>
 
-<form th:action="@{/sanpham/search}" method="get">
+<!-- Form tìm kiếm -->
+<form th:action="@{/sanpham}" method="get">
   <input type="text" name="tenSanPham" th:value="${searchName}" placeholder="Tìm theo tên">
   <button type="submit">Tìm kiếm</button>
-  <a th:if="${searchMode}" th:href="@{/sanpham}">X</a>
+  <a th:if="${searchMode}" th:href="@{/sanpham}">Reset</a>
 </form>
 
 <a th:href="@{/sanpham/add}">Thêm sản phẩm mới</a>
 
+<!-- Grid sản phẩm -->
 <div class="product-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; padding: 20px;">
   <div class="product-card-wrapper" th:each="sp : ${sanpham}">
     <a th:href="@{'/thuoctinh/' + ${sp.maSanPham}}" style="text-decoration: none; color: inherit;">
@@ -83,17 +90,21 @@
   </div>
 </div>
 
-
-
-
+<!-- Phân trang -->
 <div class="pagination">
   <span>Trang: </span>
   <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
-    <a th:href="@{'/sanpham?page=' + ${i}}" th:text="${i + 1}"
+    <a th:href="@{/sanpham(page=${i}, tenSanPham=${searchName})}"
+       th:text="${i + 1}"
        th:classappend="${i == currentPage} ? 'active' : ''">1</a>
     <span th:if="${i < totalPages - 1}">|</span>
   </span>
 </div>
+
+
+<a th:href="@{/lichsumuahang}">
+  <button>Đơn hàng</button>
+</a>
 
 </body>
 </html>

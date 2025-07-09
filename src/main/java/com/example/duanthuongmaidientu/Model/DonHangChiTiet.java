@@ -28,4 +28,17 @@ public class DonHangChiTiet {
     private int soLuong;
 
     private BigDecimal donGia;
+
+
+
+
+    @Transient
+    public String getDonGiaHienThi() {
+        if (donGia == null) return "0 đ";
+        java.text.DecimalFormat formatter = new java.text.DecimalFormat("#,###");
+        formatter.setGroupingUsed(true);
+        formatter.setGroupingSize(3);
+        // Thay dấu phẩy bằng dấu chấm
+        return formatter.format(donGia).replace(",", ".") + " đ";
+    }
 }

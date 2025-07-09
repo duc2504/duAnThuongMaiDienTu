@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +52,13 @@ public class Service_DonHang {
         chiTietRepo.save(ct);
 
         return dh;
+    }
+
+
+
+
+    public List<DonHang> getDonHangByUserIdAndTrangThai(Integer userId, int trangThai) {
+        return donHangRepo.findByUser_IdAndTrangThai(userId, trangThai);
     }
 
 }

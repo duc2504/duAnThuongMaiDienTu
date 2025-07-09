@@ -36,6 +36,8 @@ public class Controller_DonHang {
 
         model.addAttribute("bienThe", bienThe);
         model.addAttribute("soLuong", soLuong);
+
+        model.addAttribute("thuocTinhs", bienThe.getThuocTinhs());
         return "donhang/thongtin"; // HTML xử lý tất cả tại đây
     }
 
