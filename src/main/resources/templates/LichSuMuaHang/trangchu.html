@@ -120,8 +120,9 @@
 <h1>Lịch sử mua hàng</h1>
 
 <div class="tabs">
-    <a th:href="@{/lichsumuahang(trangThai=0)}" th:classappend="${trangThai == 0} ? 'active' : ''">Đang giao</a>
-    <a th:href="@{/lichsumuahang(trangThai=1)}" th:classappend="${trangThai == 1} ? 'active' : ''">Đã giao</a>
+    <a th:href="@{/lichsumuahang}" th:classappend="${trangThai == null} ? 'active' : ''">Tất cả</a>
+    <a th:href="@{/lichsumuahang(trangThai=0)}" th:classappend="${trangThai == 0} ? 'active' : ''">Chờ duyệt</a>
+    <a th:href="@{/lichsumuahang(trangThai=1)}" th:classappend="${trangThai == 1} ? 'active' : ''">Đang giao hàng</a>
 </div>
 
 <div th:if="${#lists.isEmpty(danhSachDonHang)}">
@@ -145,6 +146,7 @@
             <p>Số điện thoại: <span th:text="${donHang.soDienThoai}"></span></p>
             <p>Phương thức thanh toán: <span th:text="${donHang.phuongThucThanhToan}"></span></p>
             <p><strong>Tổng tiền:</strong> <span th:text="${donHang.giaHienThi}"></span></p>
+            <p><strong>Trạng thái:</strong> <span th:text="${donHang.getTrangThaiHienThi}"></span></p>
         </div>
     </div>
 

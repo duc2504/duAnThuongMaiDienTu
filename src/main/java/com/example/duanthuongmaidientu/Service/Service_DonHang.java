@@ -61,4 +61,8 @@ public class Service_DonHang {
         return donHangRepo.findByUser_IdAndTrangThai(userId, trangThai);
     }
 
+    public List<DonHang> getDonHangByUser(Users user) {
+        return donHangRepo.findByUser(user);
+    }
+
 }

@@ -17,7 +17,6 @@
         <div class="col-md-8">
             <h4 th:text="${bienThe.sanPham.tenSanPham}">Tên sản phẩm</h4>
             <p>Mã SKU: <span th:text="${bienThe.maSKU}"></span></p>
-           
             <ul>
                 <li th:each="tt : ${thuocTinhs}">
                     <b th:text="${tt.tenThuocTinh}"></b>:
@@ -25,10 +24,7 @@
                           th:text="${ttbt.tenThuocTinhBienThe}"></span>
                 </li>
             </ul>
-
-
-
-            <p>Giá: <span id="giaDonVi" th:text="${bienThe.giaHienThi}"   th:data-gia="${bienThe.gia}"></span> đ</p>
+            <p>Giá: <span id="giaDonVi" th:text="${bienThe.giaHienThi}" th:data-gia="${bienThe.gia}"></span> đ</p>
 
             <div class="d-flex align-items-center mt-3">
                 <label class="me-2">Số lượng:</label>
@@ -39,7 +35,7 @@
             </div>
 
             <p class="mt-3"><strong>Tổng tiền:</strong>
-                <span id="tongTien" > </span>
+                <span id="tongTien"></span>
             </p>
         </div>
     </div>
@@ -47,11 +43,14 @@
     <!-- Ẩn mã SKU -->
     <input type="hidden" name="maSKU" th:value="${bienThe.maSKU}">
 
-    <!-- Thông tin giao hàng -->
+    <!-- Địa chỉ nhận hàng -->
     <div class="mb-3">
         <label>Địa chỉ nhận hàng:</label>
-        <input type="text" name="diaChi" class="form-control" required>
+        <input type="text" name="diaChi" id="diaChiInput" class="form-control" required>
     </div>
+
+    <!-- Bản đồ để chọn địa chỉ -->
+    <div id="map" style="height: 400px;" class="mb-3"></div>
 
     <div class="mb-3">
         <label>Số điện thoại:</label>
@@ -67,18 +66,17 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Xác nhận đặt hàng</button>
-
     <a th:href="@{/sanpham}" class="btn btn-secondary mt-5">Hủy đặt hàng</a>
 </form>
 
+<!-- SCRIPT xử lý tổng tiền + bản đồ -->
 <script>
     function updateTongTien() {
-        const gia = parseInt(document.getElementById("giaDonVi").getAttribute("data-gia")); // dùng giá gốc (130000)
+        const gia = parseInt(document.getElementById("giaDonVi").getAttribute("data-gia"));
         const soLuong = parseInt(document.getElementById("soLuongInput").value);
         const tong = gia * soLuong;
-        document.getElementById("tongTien").innerText = tong.toLocaleString('vi-VN') + ' đ'; // hiển thị 520.000 đ
+        document.getElementById("tongTien").innerText = tong.toLocaleString('vi-VN') + ' đ';
     }
-
 
     function increaseQty() {
         const input = document.getElementById("soLuongInput");
@@ -94,8 +92,53 @@
         }
     }
 
-    document.addEventListener("DOMContentLoaded", updateTongTien);
+    document.addEventListener("DOMContentLoaded", () => {
+        updateTongTien();
+        initMap();
+    });
+
+    // Google Map + Geocoder
+    let map;
+    let marker;
+    let geocoder;
+
+    function initMap() {
+        const defaultLocation = { lat: 21.0285, lng: 105.8542 }; // Hà Nội
+
+        map = new google.maps.Map(document.getElementById("map"), {
+            center: defaultLocation,
+            zoom: 15,
+        });
+
+        geocoder = new google.maps.Geocoder();
+
+        map.addListener("click", function (event) {
+            const clickedLocation = event.latLng;
+
+            if (!marker) {
+                marker = new google.maps.Marker({
+                    position: clickedLocation,
+                    map: map,
+                });
+            } else {
+                marker.setPosition(clickedLocation);
+            }
+
+            geocoder.geocode({ location: clickedLocation }, function (results, status) {
+                if (status === "OK" && results[0]) {
+                    const address = results[0].formatted_address;
+                    document.getElementById("diaChiInput").value = address;
+                } else {
+                    document.getElementById("diaChiInput").value = "Không tìm thấy địa chỉ.";
+                }
+            });
+        });
+    }
 </script>
+
+<!-- Nhúng Google Maps JS API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"
+        async defer></script>
 
 </body>
 </html>

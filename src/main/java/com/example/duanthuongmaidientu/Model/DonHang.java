@@ -49,4 +49,17 @@ public class DonHang {
         // Thay dấu phẩy bằng dấu chấm
         return formatter.format(tongTien).replace(",", ".") + " đ";
     }
+
+    @Transient
+    public String getTrangThaiHienThi() {
+        if (trangThai == null) return "Không xác định";
+        return switch (trangThai) {
+            case 0 -> "Chờ duyệt";
+            case 1 -> "Đang giao hàng";
+            case 2 -> "Hoàn thành";
+            case 3 -> "Đã hủy";
+            default -> "Không xác định";
+        };
+    }
+
 }

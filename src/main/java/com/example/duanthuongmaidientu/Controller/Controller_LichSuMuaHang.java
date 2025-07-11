@@ -20,39 +20,32 @@ import java.util.List;
 public class Controller_LichSuMuaHang {
 
 
-    private  final Service_DonHang donHangService;
-//
-//    @GetMapping
-//    public String xemLichSu(HttpSession session, Model model) {
-//        Users currentUser = (Users) session.getAttribute("currentUser");
-//
-//        if (currentUser == null) {
-//            return "redirect:/login";
-//        }
-//
-//        List<DonHang> danhSachDonHang = donHangService.getDonHangDangGiaoByUserId(currentUser.getId());
-//        model.addAttribute("danhSachDonHang", danhSachDonHang);
-//
-//        return "lichSuMuaHang/trangchu";
-//
-//    }
-@GetMapping
-public String xemLichSu(@RequestParam(defaultValue = "0") int trangThai,
-                        HttpSession session,
-                        Model model) {
+    private final Service_DonHang donHangService;
 
-    
-    Users currentUser = (Users) session.getAttribute("currentUser");
 
-    if (currentUser == null) {
-        return "redirect:/login";
+    @GetMapping
+    public String xemLichSu(@RequestParam(required = false) Integer trangThai,
+                            HttpSession session,
+                            Model model) {
+
+        Users currentUser = (Users) session.getAttribute("currentUser");
+
+        if (currentUser == null) {
+            return "redirect:/login";
+        }
+
+        List<DonHang> danhSachDonHang;
+
+        if (trangThai == null) {
+            // Nếu không có trạng thái -> lấy tất cả đơn hàng theo user
+            danhSachDonHang = donHangService.getDonHangByUser(currentUser);
+        } else {
+            // Nếu có trạng thái -> lọc theo trạng thái
+            danhSachDonHang = donHangService.getDonHangByUserIdAndTrangThai(currentUser.getId(), trangThai);
+            model.addAttribute("trangThai", trangThai);
+        }
+
+        model.addAttribute("danhSachDonHang", danhSachDonHang);
+        return "lichSuMuaHang/trangchu";
     }
-
-    List<DonHang> danhSachDonHang = donHangService.getDonHangByUserIdAndTrangThai(currentUser.getId(), trangThai);
-
-    model.addAttribute("danhSachDonHang", danhSachDonHang);
-    model.addAttribute("trangThai", trangThai);
-    return "lichSuMuaHang/trangchu";
 }
-}
-
