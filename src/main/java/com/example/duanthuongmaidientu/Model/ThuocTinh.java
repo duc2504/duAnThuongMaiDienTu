@@ -22,9 +22,10 @@ public class ThuocTinh {
 
     private String tenThuocTinh;
 
-    @OneToMany(mappedBy = "thuocTinh")
-    private List<ThuocTinhBienThe> thuocTinhBienTheList;
+    private String tenThuocTinhBienThe;
 
+
+    private Integer TrangThai  ;
     @ManyToOne
     @JoinColumn(name = "maSKU")
     private BienThe bienThe;

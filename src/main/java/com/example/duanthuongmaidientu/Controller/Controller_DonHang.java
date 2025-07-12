@@ -2,6 +2,7 @@ package com.example.duanthuongmaidientu.Controller;
 
 import com.example.duanthuongmaidientu.Model.BienThe;
 import com.example.duanthuongmaidientu.Model.DonHang;
+import com.example.duanthuongmaidientu.Model.SanPham;
 import com.example.duanthuongmaidientu.Service.Service_BienThe;
 import com.example.duanthuongmaidientu.Service.Service_DonHang;
 import jakarta.servlet.http.HttpSession;
@@ -11,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/donhang")
@@ -20,26 +22,38 @@ public class Controller_DonHang {
     private final Service_BienThe service_bienThe;
     private final Service_DonHang service_donHang;
 
-    // Hiển thị form đặt hàng (gộp hiển thị sản phẩm, số lượng, địa chỉ, sđt, thanh toán)
     @GetMapping("/nhapthongtin")
-    public String hienThiForm(@RequestParam("sku") String maSKU,
-                              @RequestParam("soluong") Integer soLuong,
+    public String hienThiForm(@RequestParam("maSKU") String maSKU,
+                              @RequestParam("soLuong") Integer soLuong,
                               Model model) {
 
+        BienThe bienThe = service_bienThe.getOne(maSKU);
 
-        List<String> imageList = List.of(
-                "/images/sanpham" + maSKU + "_1.png"
-        );
-        model.addAttribute("imageList", imageList);
-        BienThe bienThe = service_bienThe.getBienTheBySKU(maSKU).orElse(null);
-        if (bienThe == null) return "redirect:/sanpham";
+        if (bienThe == null || bienThe.getSanPham() == null) {
+            return "redirect:/sanpham";
+        }
+
+        Integer maSanPham = bienThe.getSanPham().getMaSanPham();
+
+        // Nếu số lượng vượt quá tồn kho
+        if (soLuong <= 0 || soLuong > bienThe.getSoLuong()) {
+            soLuong = 1; // Hoặc return lỗi
+        }
+
+        // Thay vì tạo imageList cho tất cả biến thể
+        String mainImage = "/images/" + maSanPham + "/" + bienThe.getMaSKU() + "-1.png";
+        model.addAttribute("mainImage", mainImage);
+
+
 
         model.addAttribute("bienThe", bienThe);
         model.addAttribute("soLuong", soLuong);
-
         model.addAttribute("thuocTinhs", bienThe.getThuocTinhs());
-        return "donhang/thongtin"; // HTML xử lý tất cả tại đây
+        model.addAttribute("sanPham", bienThe.getSanPham()); // Gửi thêm nếu cần
+
+        return "donhang/thongtin";
     }
+
 
     // Đặt hàng sau khi điền đầy đủ thông tin
     @PostMapping("/dat")
@@ -51,14 +65,19 @@ public class Controller_DonHang {
                           HttpSession session,
                           Model model) {
 
-        DonHang dh = service_donHang.taoDonHang(maSKU, soLuong, diaChi, sdt, pttt, session);
+        BienThe bienThe = service_bienThe.getOne(maSKU);
+        if (bienThe == null || bienThe.getSoLuong() < soLuong) {
+            model.addAttribute("error", "Số lượng không hợp lệ hoặc biến thể không tồn tại.");
+            return "redirect:/sanpham";
+        }
 
+        DonHang dh = service_donHang.taoDonHang(maSKU, soLuong, diaChi, sdt, pttt, session);
         if (dh == null) {
-            session.invalidate(); // Xoá session nếu user null (bảo mật nhẹ)
+            session.invalidate(); // Có thể giữ lại session nếu chỉ lỗi nhỏ
             return "redirect:/login";
         }
 
-        model.addAttribute("donHang", dh);
-        return "redirect:/sanpham"; // Giao diện xác nhận đơn hàng
+        return "redirect:/sanpham"; // Sau này có thể trả về trang xác nhận đơn hàng
     }
+
 }

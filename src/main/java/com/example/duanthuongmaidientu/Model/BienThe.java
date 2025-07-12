@@ -17,8 +17,7 @@ import java.util.List;
 @Table(name = "BienTheSanPham")
 public class BienThe {
 
-    @Column(insertable = false, updatable = false)
-    private Integer STT; // tự tăng ở DB, không chỉnh sửa từ Java
+
 
 
     @Id

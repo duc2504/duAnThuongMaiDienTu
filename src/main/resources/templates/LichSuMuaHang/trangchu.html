@@ -164,10 +164,8 @@
             <td th:text="${ct.bienThe.maSKU}"></td>
             <td>
                 <span th:text="${ct.bienThe.sanPham.tenSanPham}"></span>
-                <div th:each="tt : ${ct.bienThe.thuocTinhs}">
-                    <div th:each="ttbt : ${tt.thuocTinhBienTheList}" class="thuoc-tinh">
-                        <span th:text="${tt.tenThuocTinh + ': ' + ttbt.tenThuocTinhBienThe}"></span>
-                    </div>
+                <div th:each="tt : ${ct.bienThe.thuocTinhs}" class="thuoc-tinh">
+                    <span th:text="${tt.tenThuocTinh + ': ' + tt.tenThuocTinhBienThe}"></span>
                 </div>
             </td>
             <td th:text="${ct.soLuong}"></td>

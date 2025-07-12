@@ -40,6 +40,10 @@ public class SanPham {
     @OneToMany(mappedBy = "sanPham")
     private List<BienThe> bienThes;
 
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private Users user;
+
     @Transient
     public String getGiaHienThi() {
         if (gia == null) return "0 đ";

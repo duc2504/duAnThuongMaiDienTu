@@ -1,7 +1,6 @@
 package com.example.duanthuongmaidientu.Repository;
 
 import com.example.duanthuongmaidientu.Model.BienThe;
-import com.example.duanthuongmaidientu.Model.ThuocTinhBienThe;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

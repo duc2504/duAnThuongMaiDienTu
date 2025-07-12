@@ -37,17 +37,9 @@ public class Service_BienThe {
         repository_bienThe.deleteById(maSKU);
     }
 
-    public List<BienThe> getByMaSanPham(Integer maSanPham) {
+
+    public List<BienThe> findBySanPham_MaSanPham(Integer maSanPham) {
         return repository_bienThe.findBySanPham_MaSanPham(maSanPham);
-    }
-
-    public List<BienThe> getBienTheBySanPham(Integer maSanPham) {
-        return repository_bienThe.findBySanPham_MaSanPham(maSanPham);
-    }
-
-
-    public Optional<BienThe> getBienTheBySKU(String maSKU) {
-        return repository_bienThe.findById(maSKU);
     }
 
 }
