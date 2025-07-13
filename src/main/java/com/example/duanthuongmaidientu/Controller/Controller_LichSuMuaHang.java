@@ -48,4 +48,18 @@ public class Controller_LichSuMuaHang {
         model.addAttribute("danhSachDonHang", danhSachDonHang);
         return "lichSuMuaHang/trangchu";
     }
+
+    @GetMapping("/shop")
+    public String duyetDonHang(Model model, HttpSession session) {
+        Users currentShop = (Users) session.getAttribute("currentUser");
+
+        if (currentShop == null) {
+            return "redirect:/login";
+        }
+
+        List<DonHang> donHangList = donHangService.getDonHangsByShop(currentShop.getId());
+        model.addAttribute("donHangList", donHangList);
+
+        return "lichSuMuaHang/shop"; // trỏ tới file donhang.html
+    }
 }

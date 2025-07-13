@@ -1,5 +1,6 @@
 package com.example.duanthuongmaidientu.Controller;
 
+import com.example.duanthuongmaidientu.Model.BienThe;
 import com.example.duanthuongmaidientu.Model.SanPham;
 import com.example.duanthuongmaidientu.Service.Service_DanhMuc;
 import com.example.duanthuongmaidientu.Service.Service_SanPham;
@@ -9,6 +10,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/sanpham")
@@ -39,9 +44,27 @@ public class Controller_SanPham {
             model.addAttribute("searchMode", false);
         }
 
+        List<SanPham> sanPhamList = sanPhamPage.getContent();
+
+        // Map<maSanPham, String>: mỗi sản phẩm 1 ảnh
+        Map<Integer, String> imageMap = new HashMap<>();
+
+        for (SanPham sp : sanPhamList) {
+            Integer maSanPham = sp.getMaSanPham();
+
+            List<BienThe> bienThes = sp.getBienThes(); // hoặc gọi từ service nếu cần
+            if (bienThes != null && !bienThes.isEmpty()) {
+                String maSKU = bienThes.get(0).getMaSKU(); // lấy biến thể đầu tiên
+                String imagePath = "/images/" + maSanPham + "/" + "1.png";
+                imageMap.put(maSanPham, imagePath);
+            }
+        }
+
         model.addAttribute("sanpham", sanPhamPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", sanPhamPage.getTotalPages());
+        model.addAttribute("imageMap", imageMap); // gửi map ảnh ra view
+        model.addAttribute("danhmucList", serviceDanhMuc.getAll());
 
         return "sanpham/trangchu";
     }

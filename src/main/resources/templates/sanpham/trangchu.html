@@ -10,10 +10,34 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
+    .shopee-header {
+      background-color: #ee4d2d;
+      color: white;
+      padding: 10px 20px;
+    }
+
+    .shopee-header .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .shopee-nav {
+      background-color: white;
+      padding: 10px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .shopee-nav a {
+      margin-right: 20px;
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
     .shopee-title {
       font-size: 24px;
       font-weight: bold;
-      margin-top: 20px;
+      margin: 20px 0;
       color: #ee4d2d;
     }
 
@@ -40,6 +64,13 @@
     .product-card:hover {
       transform: translateY(-5px);
       box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .product-image img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 8px;
     }
 
     .product-name {
@@ -75,62 +106,108 @@
       font-weight: bold;
       color: #ee4d2d;
     }
+
+    .shopee-footer {
+      background-color: #fff;
+      padding: 20px;
+      border-top: 1px solid #eee;
+      text-align: center;
+      font-size: 14px;
+      color: #666;
+      margin-top: 40px;
+    }
   </style>
 </head>
 
-<body class="container py-4">
+<body>
 
-<h2 class="shopee-title">🛍️ Danh sách sản phẩm</h2>
-
-<!-- Tìm kiếm -->
-<form th:action="@{/sanpham}" method="get" class="row g-3 align-items-center search-bar">
-  <div class="col-auto">
-    <input type="text" name="tenSanPham" class="form-control" placeholder="Tìm tên sản phẩm"
-           th:value="${searchName}">
+<!-- Header -->
+<div class="shopee-header d-flex justify-content-between align-items-center">
+  <div class="logo">🏍️ Shopee Mini</div>
+  <form th:action="@{/sanpham}" method="get" class="d-flex">
+    <input type="text" name="tenSanPham" class="form-control me-2" placeholder="Tìm kiếm sản phẩm" th:value="${searchName}">
+    <button class="btn btn-light" type="submit">🔍</button>
+  </form>
+  <div>
+    <a th:href="@{/giohang}" class="text-white text-decoration-none">🛍 Giỏ hàng</a>
   </div>
-  <div class="col-auto">
-    <button type="submit" class="btn btn-primary">🔍 Tìm kiếm</button>
-  </div>
-  <div class="col-auto" th:if="${searchMode}">
-    <a th:href="@{/sanpham}" class="btn btn-outline-secondary">↩ Reset</a>
-  </div>
-</form>
-
-<!-- Thêm sản phẩm -->
-<div class="mb-3">
-  <a th:href="@{/sanpham/add}" class="btn btn-success">➕ Thêm sản phẩm</a>
 </div>
 
-<!-- Danh sách sản phẩm -->
-<div class="product-grid">
-  <a th:each="sp : ${sanpham}"
-     th:href="@{'/thuoctinh/' + ${sp.maSanPham}}"
-     class="product-card">
-    <div class="product-name" th:text="${sp.tenSanPham}">Tên sản phẩm</div>
-    <div class="product-desc" th:text="${sp.moTa}">Mô tả ngắn</div>
-    <div class="product-price" th:text="${sp.giaHienThi}">100.000 đ</div>
-    <div class="product-category">
-      Danh mục:
-      <span th:text="${sp.danhMuc != null ? sp.danhMuc.tenDanhMuc : 'Không có'}"></span>
+<!-- Nav Menu -->
+<div class="shopee-nav d-flex">
+  <a th:href="@{/sanpham}">🏠 Trang chủ</a>
+  <a th:href="@{/sanpham}">🔥 Khuyến mãi</a>
+  <a th:href="@{/danhmuc}">📚 Danh mục</a>
+  <a th:href="@{/taikhoan}">👤 Tài khoản</a>
+</div>
+
+
+<!---->
+
+<!-- Main Container -->
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center">
+    <h2 class="shopee-title">Danh sách sản phẩm</h2>
+    <a th:href="@{/sanpham/add}" class="btn btn-success">➕ Thêm sản phẩm</a>
+  </div>
+
+  <!-- Tìm kiếm mở rộng -->
+  <form th:action="@{/sanpham}" method="get" class="row g-3 align-items-center search-bar">
+    <div class="col-auto">
+      <input type="text" name="tenSanPham" class="form-control" placeholder="Nhập tên sản phẩm" th:value="${searchName}">
     </div>
-    <div class="text-muted small mt-2">🡆 Xem chi tiết</div>
-  </a>
-</div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">🔍 Tìm</button>
+    </div>
+    <div class="col-auto" th:if="${searchMode}">
+      <a th:href="@{/sanpham}" class="btn btn-outline-secondary">↩ Reset</a>
+    </div>
+  </form>
 
-<!-- Phân trang -->
-<div class="pagination mt-4">
-  <span>Trang:</span>
-  <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+  <!-- Danh sách sản phẩm -->
+  <div class="product-grid">
+    <a th:each="sp : ${sanpham}"
+       th:href="@{'/thuoctinh/' + ${sp.maSanPham}}"
+       class="product-card">
+
+      <div class="product-image">
+        <img th:src="${imageMap[sp.maSanPham]}" alt="Ảnh sản phẩm"
+             onerror="this.onerror=null; this.src='/images/default.png'">
+      </div>
+
+      <div class="product-name" th:text="${sp.tenSanPham}">Tên sản phẩm</div>
+      <div class="product-desc" th:text="${sp.moTa}">Mô tả ngắn</div>
+      <div class="product-desc">
+        Số lượng còn lại: <span th:text="${sp.soLuong}">0</span>
+      </div>
+      <div class="product-price" th:text="${sp.giaHienThi}">100.000 đ</div>
+      <div class="product-category">
+        Danh mục: <span th:text="${sp.danhMuc != null ? sp.danhMuc.tenDanhMuc : 'Không có'}"></span>
+      </div>
+      <div class="text-muted small mt-2">👆 Xem chi tiết</div>
+    </a>
+  </div>
+
+  <!-- Phân trang -->
+  <div class="pagination mt-4">
+    <span>Trang:</span>
+    <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
       <a th:href="@{/sanpham(page=${i}, tenSanPham=${searchName})}"
          th:text="${i + 1}"
          th:classappend="${i == currentPage} ? 'active' : ''">1</a>
     </span>
+  </div>
+
+  <!-- Điều hướng -->
+  <div class="mt-4 d-flex gap-2">
+    <a th:href="@{/lichsumuahang}" class="btn btn-outline-dark">📦 Đơn hàng</a>
+    <a th:href="@{/lichsumuahang/shop}" class="btn btn-outline-warning">🛠 Duyệt đơn hàng</a>
+  </div>
 </div>
 
-<!-- Điều hướng -->
-<div class="mt-4">
-  <a th:href="@{/lichsumuahang}" class="btn btn-outline-dark me-2">📦 Đơn hàng</a>
-  <a th:href="@{/lichsumuahang/admin}" class="btn btn-outline-warning">🛠 Quản lý đơn</a>
+<!-- Footer -->
+<div class="shopee-footer">
+  © 2025 Shopee Mini Clone. Thiết kế bởi bạn & ChatGPT. Liên hệ: support@shopee-mini.vn
 </div>
 
 </body>

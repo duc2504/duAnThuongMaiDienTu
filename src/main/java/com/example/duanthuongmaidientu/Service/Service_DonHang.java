@@ -25,6 +25,7 @@ public class Service_DonHang {
     private final Repository_DonHangChiTiet chiTietRepo;
     private final Repository_BienThe bienTheRepo;
 
+
     public DonHang taoDonHang(String maSKU, Integer soLuong, String diaChi, String sdt, String pttt, HttpSession session) {
         BienThe bienThe = bienTheRepo.findById(maSKU).orElse(null);
         if (bienThe == null) return null;
@@ -65,4 +66,12 @@ public class Service_DonHang {
         return donHangRepo.findByUser(user);
     }
 
+
+
+
+
+
+    public List<DonHang> getDonHangsByShop(Integer shopId) {
+        return chiTietRepo.findDonHangsChoDuyetByShopId(shopId);
+    }
 }

@@ -122,7 +122,7 @@
 <div class="tabs">
     <a th:href="@{/lichsumuahang}" th:classappend="${trangThai == null} ? 'active' : ''">Tất cả</a>
     <a th:href="@{/lichsumuahang(trangThai=0)}" th:classappend="${trangThai == 0} ? 'active' : ''">Chờ duyệt</a>
-    <a th:href="@{/lichsumuahang(trangThai=1)}" th:classappend="${trangThai == 1} ? 'active' : ''">Đang giao hàng</a>
+    <a th:href="@{/lichsumuahang(trangThai=1)}" th:classappend="${trangThai == 1} ? 'active' : ''">Chờ lấy hàng</a>
 </div>
 
 <div th:if="${#lists.isEmpty(danhSachDonHang)}">
@@ -132,7 +132,7 @@
 <div th:each="donHang : ${danhSachDonHang}" class="don-hang">
 
     <div class="order-header">
-        <img th:src="@{('/images/sanpham' + ${donHang.chiTietDonHangs[0].bienThe.maSKU} + '_1.png')}"
+        <img th:src="@{('/images/sanpham' + ${donHang.chiTietDonHangs[0].bienThe.maSKU} + '-1.png')}"
              alt="Ảnh sản phẩm"
              class="order-img"
              onerror="this.onerror=null; this.src='/images/default.png';" />

@@ -42,6 +42,16 @@ public class Controller_BienThe {
                 .map(maSKU -> "/images/" + maSanPham + "/" + maSKU + "-1.png")
                 .collect(Collectors.toList());
 
+
+//        List<String> imageList = bienThes.stream()
+//                .map(BienThe::getMaSKU)
+//                .map(maSKU -> List.of(
+//                        "/images/" + maSanPham + "/" + maSKU + "-1.png",
+//                        "/images/" + maSanPham + "/" + maSKU + "-2.png"
+//                ))
+//                .flatMap(List::stream) // chuyển List<List<String>> thành List<String>
+//                .collect(Collectors.toList());
+
         model.addAttribute("imageList", imageList);
 
 
