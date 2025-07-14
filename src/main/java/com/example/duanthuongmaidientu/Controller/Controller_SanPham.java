@@ -1,6 +1,7 @@
 package com.example.duanthuongmaidientu.Controller;
 
 import com.example.duanthuongmaidientu.Model.BienThe;
+import com.example.duanthuongmaidientu.Model.DanhMuc;
 import com.example.duanthuongmaidientu.Model.SanPham;
 import com.example.duanthuongmaidientu.Service.Service_DanhMuc;
 import com.example.duanthuongmaidientu.Service.Service_SanPham;
@@ -22,7 +23,7 @@ public class Controller_SanPham {
 
     private final Service_SanPham serviceSanPham;
     private final Service_DanhMuc serviceDanhMuc;
-
+    private final Service_DanhMuc service_danhMuc;
     /**
      * Danh sách sản phẩm: có hỗ trợ tìm kiếm + phân trang
      */
@@ -32,7 +33,7 @@ public class Controller_SanPham {
             @RequestParam(required = false) String tenSanPham,
             Model model) {
 
-        int size = 5;
+        int size = 3;
         Page<SanPham> sanPhamPage;
 
         if (tenSanPham != null && !tenSanPham.trim().isEmpty()) {
@@ -59,12 +60,16 @@ public class Controller_SanPham {
                 imageMap.put(maSanPham, imagePath);
             }
         }
+        List<DanhMuc> danhMucList = service_danhMuc.getAll();
+        model.addAttribute("danhMucList", danhMucList);
+
+
 
         model.addAttribute("sanpham", sanPhamPage.getContent());
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", sanPhamPage.getTotalPages());
         model.addAttribute("imageMap", imageMap); // gửi map ảnh ra view
-        model.addAttribute("danhmucList", serviceDanhMuc.getAll());
+
 
         return "sanpham/trangchu";
     }

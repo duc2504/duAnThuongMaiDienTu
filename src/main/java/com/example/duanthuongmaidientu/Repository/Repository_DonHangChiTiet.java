@@ -25,6 +25,13 @@ public interface Repository_DonHangChiTiet extends JpaRepository<DonHangChiTiet,
     List<DonHang> findDonHangsChoDuyetByShopId(@Param("shopId") Integer shopId);
 
 
-
+    @Query("""
+    SELECT DISTINCT ct.donHang 
+    FROM DonHangChiTiet ct 
+    WHERE ct.bienThe.sanPham.user.id = :shopId
+    
+    ORDER BY ct.donHang.ngayDat DESC
+""")
+    List<DonHang> findDonHangsChoDuyetByShopIdALL(@Param("shopId") Integer shopId);
 }
 

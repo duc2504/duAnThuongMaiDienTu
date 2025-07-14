@@ -15,8 +15,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -74,4 +77,34 @@ public class Service_DonHang {
     public List<DonHang> getDonHangsByShop(Integer shopId) {
         return chiTietRepo.findDonHangsChoDuyetByShopId(shopId);
     }
+
+    public List<DonHang> getDonHangsByShopAll(Integer shopId) {
+        return chiTietRepo.findDonHangsChoDuyetByShopIdALL(shopId);
+    }
+
+
+
+    public Optional<DonHang> findByMaDonHang(Integer maDonHang) {
+        return donHangRepo.findByMaDonHang(maDonHang);
+    }
+
+    public DonHang save(DonHang donHang) {
+        return donHangRepo.save(donHang);
+    }
+
+    public List<DonHang> getDonHangsByShopAndMonth(Integer shopId, int month) {
+        return donHangRepo.findByShopIdAndMonth(shopId, month);
+    }
+
+
+    public List<DonHang> getDonHangsByShopAndMonthAndYear(Integer shopId, int month , int year) {
+        return donHangRepo.findByShopIdAndMonthAndYear(shopId, month , year);
+    }
+
+    public List<DonHang> getDonHangsByShopYear(Integer shopId, int year) {
+        return donHangRepo.findByShopIdAndYear(shopId,  year);
+    }
+
+
+
 }
