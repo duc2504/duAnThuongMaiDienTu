@@ -3,9 +3,13 @@ package com.example.duanthuongmaidientu.Controller;
 import com.example.duanthuongmaidientu.Model.BienThe;
 import com.example.duanthuongmaidientu.Model.DanhMuc;
 import com.example.duanthuongmaidientu.Model.SanPham;
+import com.example.duanthuongmaidientu.Model.Users;
 import com.example.duanthuongmaidientu.Service.Service_DanhMuc;
 import com.example.duanthuongmaidientu.Service.Service_SanPham;
+import com.example.duanthuongmaidientu.Service.Service_Users;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -31,9 +35,16 @@ public class Controller_SanPham {
     public String listSanPham(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(required = false) String tenSanPham,
+            HttpSession session,
             Model model) {
+        Users user = (Users) session.getAttribute("currentUser");
+        if (user != null) {
+            model.addAttribute("fullname", user.getUsername()); // hoặc user.getFullname() nếu có
+        } else {
+            model.addAttribute("fullname", "Khách");
+        }
 
-        int size = 3;
+        int size = 10;
         Page<SanPham> sanPhamPage;
 
         if (tenSanPham != null && !tenSanPham.trim().isEmpty()) {

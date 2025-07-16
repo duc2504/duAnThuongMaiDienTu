@@ -40,7 +40,7 @@ public interface Repository_DonHang extends JpaRepository<DonHang, Integer> {
             "SELECT 1 FROM DonHangChiTiet ct WHERE ct.donHang = d AND ct.bienThe.sanPham.user.id = :shopId)")
     List<DonHang> findByShopIdAndYear(@Param("shopId") Integer shopId, @Param("year") int year);
 
-
+    List<DonHang> findByTrangThai(Integer trangThai);
 
 }
 

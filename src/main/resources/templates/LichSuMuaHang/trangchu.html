@@ -3,183 +3,253 @@
 <head>
     <meta charset="UTF-8">
     <title>Lịch Sử Mua Hàng</title>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f8f8f8;
-            font-size: 13px;
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
         }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            font-size: 22px;
-            margin-bottom: 20px;
+        .order-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+            gap: 20px;
+            padding: 20px 40px;
         }
 
         .don-hang {
-            background-color: #fff;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-            border-radius: 6px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            padding: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        .don-hang:hover {
+            transform: translateY(-3px);
         }
 
         .order-header {
             display: flex;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: 14px;
+            margin-bottom: 12px;
         }
 
         .order-img {
-            width: 100px;
-            height: 100px;
+            width: 80px;
+            height: 80px;
             object-fit: cover;
             border-radius: 6px;
-            flex-shrink: 0;
         }
 
         .order-info {
             flex: 1;
+            font-size: 14px;
         }
 
-        .order-info h3 {
-            margin: 0 0 5px;
-            color: #007bff;
-            font-size: 14px;
+        .order-info .highlight {
+            color: #f53d2d;
+            font-weight: 600;
+        }
+
+        .order-info h5 {
+            margin: 0;
+            font-size: 16px;
+            color: #d9341a;
+            font-weight: bold;
         }
 
         .order-info p {
             margin: 2px 0;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th, td {
-            padding: 6px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-
-        th {
-            background-color: #f1f1f1;
-        }
-
-        .thuoc-tinh {
-            color: #555;
-            font-size: 12px;
-        }
-
-        .tabs {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .tabs a {
-            text-decoration: none;
-            padding: 6px 12px;
-            margin: 0 4px;
-            border: 1px solid #ccc;
-            background-color: #e0e0e0;
-            color: #000;
-            border-radius: 4px;
+        .product-item {
+            background-color: #fefefe;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            padding: 8px 12px;
             font-size: 13px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
         }
 
-        .tabs a.active {
-            background-color: #007bff;
-            color: white;
-            font-weight: bold;
+        .product-item .details {
+            color: #333;
+        }
+
+        .product-item .details span {
+            font-weight: 500;
+        }
+
+        .product-item .thuoc-tinh {
+            font-size: 12px;
+            color: #777;
         }
 
         .back-home {
             text-align: center;
-            margin-top: 20px;
+            padding: 20px;
         }
 
-        .back-home button {
-            padding: 8px 16px;
-            background-color: #007bff;
+        .back-home a button {
+            background-color: #f53d2d;
             border: none;
+            border-radius: 20px;
+            padding: 10px 24px;
             color: white;
-            border-radius: 4px;
+            font-size: 14px;
             cursor: pointer;
-            font-size: 13px;
         }
 
-        .back-home button:hover {
-            background-color: #0056b3;
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tabs a {
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            background-color: #eee;
+            color: #333;
+            transition: 0.2s;
+            font-weight: 500;
+        }
+
+        .tabs a.active {
+            background-color: #f53d2d;
+            color: white;
+        }
+
+        .tabs a:hover {
+            background-color: #ff5722;
+            color: white;
+        }
+
+        .shopee-header {
+            background: linear-gradient(90deg, #f53d2d, #f63);
+            color: white;
+            font-size: 15px;
+        }
+
+        .shopee-header a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .shopee-header a:hover {
+            color: #ffd5bd;
+            text-decoration: underline;
+        }
+
+        .shopee-header .badge {
+            font-size: 13px;
+            padding: 4px 7px;
         }
     </style>
 </head>
 <body>
 
-<h1>Lịch sử mua hàng</h1>
-
-<div class="tabs">
-    <a th:href="@{/lichsumuahang}" th:classappend="${trangThai == null} ? 'active' : ''">Tất cả</a>
-    <a th:href="@{/lichsumuahang(trangThai=0)}" th:classappend="${trangThai == 0} ? 'active' : ''">Chờ duyệt</a>
-    <a th:href="@{/lichsumuahang(trangThai=1)}" th:classappend="${trangThai == 1} ? 'active' : ''">Chờ lấy hàng</a>
-    <a th:href="@{/sanpham}">🔙 Quay lại</a>
-</div>
-
-<div th:if="${#lists.isEmpty(danhSachDonHang)}">
-    <p style="text-align: center;">Không có đơn hàng nào.</p>
-</div>
-
-<div th:each="donHang : ${danhSachDonHang}" class="don-hang">
-    <div class="order-header">
-        <img th:src="@{('/images/sanpham' + ${donHang.chiTietDonHangs[0].bienThe.maSKU} + '-1.png')}"
-             alt="Ảnh sản phẩm"
-             class="order-img"
-             onerror="this.onerror=null; this.src='/images/default.png';" />
-
-        <div class="order-info">
-            <h3>
-                Mã: <span th:text="${donHang.maDonHang}"></span> |
-                Ngày: <span th:text="${donHang.ngayDat}"></span>
-            </h3>
-            <p>Địa chỉ: <span th:text="${donHang.diaChiNhanHang}"></span></p>
-            <p>SĐT: <span th:text="${donHang.soDienThoai}"></span></p>
-            <p>Thanh toán: <span th:text="${donHang.phuongThucThanhToan}"></span></p>
-            <p><strong>Tổng:</strong> <span th:text="${donHang.giaHienThi}"></span></p>
-            <p><strong>Trạng thái:</strong> <span th:text="${donHang.getTrangThaiHienThi}"></span></p>
+<header class="shopee-header px-5 py-3">
+    <div class="d-flex justify-content-between align-items-center top-bar mb-2 flex-wrap">
+        <div class="d-flex align-items-center gap-3 flex-wrap text-white small">
+            <a href="#"><i class="bi bi-shop-window me-1"></i>Kênh Người Bán</a>
+            <a href="#"><i class="bi bi-cloud-arrow-down me-1"></i>Tải ứng dụng</a>
+            <span class="mx-2">|</span>
+            <span>Kết nối:</span>
+            <a href="#"><i class="bi bi-facebook"></i></a>
+            <a href="#"><i class="bi bi-instagram"></i></a>
+            <a href="#"><i class="bi bi-tiktok"></i></a>
+            <a href="#"><i class="bi bi-youtube"></i></a>
+        </div>
+        <div class="d-flex align-items-center gap-3 flex-wrap small text-white">
+            <a href="#"><i class="bi bi-bell-fill me-1"></i>Thông báo</a>
+            <a href="#"><i class="bi bi-question-circle-fill me-1"></i>Hỗ trợ</a>
+            <div><i class="bi bi-translate me-1"></i>Tiếng Việt</div>
+            <a href="#" class="fw-bold text-warning text-decoration-none">
+                <i class="bi bi-person-circle me-1"></i>
+                <span th:text="${fullname}">Tên người dùng</span>
+            </a>
         </div>
     </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>SKU</th>
-            <th>Sản phẩm</th>
-            <th>SL</th>
-            <th>Giá</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="ct : ${donHang.chiTietDonHangs}">
-            <td th:text="${ct.bienThe.maSKU}"></td>
-            <td>
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+        <a th:href="@{/sanpham}" class="brand text-white text-decoration-none fs-3 fw-bold d-flex align-items-center gap-2">
+            <img src="/images/logo.png" alt="" style="height: 40px;"> Shopee Mini
+        </a>
+        <form th:action="@{/sanpham}" method="get" class="d-flex flex-grow-1 mx-4" style="max-width: 800px;">
+            <input type="text" name="tenSanPham" class="form-control me-2 rounded-1 shadow-sm" placeholder="🔍 Tìm kiếm sản phẩm"
+                   th:value="${searchName}">
+            <button class="btn btn-light rounded-1 px-4 fw-bold" type="submit">Tìm</button>
+        </form>
+        <div class="d-flex align-items-center gap-4 text-white fs-5">
+            <a href="#" class="text-white position-relative"><i class="bi bi-heart"></i></a>
+            <a th:href="@{/giohang}" class="text-white position-relative">
+                <i class="bi bi-cart3"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">102</span>
+            </a>
+            <a href="#" class="text-white"><i class="bi bi-gear-fill"></i></a>
+        </div>
+    </div>
+</header>
+<br>
+<h3 class="mb-4 text-primary text-center">📦 Quản lý Đơn hàng của bạn</h3>
+<div class="tabs">
+    <a th:href="@{/lichsumuahang}" th:classappend="${trangThai == null} ? 'active' : ''">Tất cả</a>
+    <a th:href="@{/lichsumuahang(trangThai=0)}" th:classappend="${trangThai == 0} ? 'active' : ''">🕒 Chờ duyệt</a>
+    <a th:href="@{/lichsumuahang(trangThai=1)}" th:classappend="${trangThai == 1} ? 'active' : ''">📦 Chờ lấy hàng</a>
+    <a th:href="@{/lichsumuahang(trangThai=2)}" th:classappend="${trangThai == 2} ? 'active' : ''">🚚 Đang giao</a>
+    <a th:href="@{/lichsumuahang(trangThai=3)}" th:classappend="${trangThai == 3} ? 'active' : ''">✅ Hoàn thành</a>
+    <a th:href="@{/sanpham}">🔙 Về trang chủ</a>
+</div>
+
+<div th:if="${#lists.isEmpty(danhSachDonHang)}" style="text-align: center; padding: 20px;">
+    <p>🛒 Không có đơn hàng nào.</p>
+</div>
+
+<div class="order-container" th:if="${!#lists.isEmpty(danhSachDonHang)}">
+    <div th:each="donHang : ${danhSachDonHang}" class="don-hang">
+        <div class="order-header">
+            <img class="order-img"
+                 th:src="@{('/images/sanpham' + ${donHang.chiTietDonHangs[0].bienThe.maSKU} + '-1.png')}"
+                 onerror="this.onerror=null; this.src='/images/default.png';"
+                 alt="Ảnh sản phẩm" />
+            <div class="order-info">
+                <h5>🧾 Mã đơn: <span th:text="${donHang.maDonHang}"></span></h5>
+                <p>🗓 Ngày đặt: <span class="highlight" th:text="${donHang.ngayDat}"></span></p>
+                <p>💳 Thanh toán: <span class="highlight" th:text="${donHang.phuongThucThanhToan}"></span></p>
+                <p>☎ SĐT: <span class="highlight" th:text="${donHang.soDienThoai}"></span></p>
+                <p>📍 Địa chỉ: <span class="highlight" th:text="${donHang.diaChiNhanHang}"></span></p>
+                <p>💰 Tổng tiền: <span class="highlight" th:text="${donHang.giaHienThi}"></span></p>
+                <p>📌 Trạng thái: <span class="text-success fw-bold" th:text="${donHang.getTrangThaiHienThi}"></span></p>
+            </div>
+        </div>
+
+        <div th:each="ct : ${donHang.chiTietDonHangs}" class="product-item">
+            <div class="details">
                 <span th:text="${ct.bienThe.sanPham.tenSanPham}"></span>
-                <div th:each="tt : ${ct.bienThe.thuocTinhs}" class="thuoc-tinh">
-                    <span th:text="${tt.tenThuocTinh + ': ' + tt.tenThuocTinhBienThe}"></span>
-                </div>
-            </td>
-            <td th:text="${ct.soLuong}"></td>
-            <td th:text="${#numbers.formatDecimal(ct.donGia, 0, 'POINT', 0, 'NONE')} + ' đ'"></td>
-        </tr>
-        </tbody>
-    </table>
+                <span class="thuoc-tinh" th:each="tt : ${ct.bienThe.thuocTinhs}"> • <span th:text="${tt.tenThuocTinhBienThe}"></span></span>
+            </div>
+            <div>
+                x<span th:text="${ct.soLuong}"></span> •
+                <span th:text="${#numbers.formatDecimal(ct.donGia, 0, 'POINT', 0, 'NONE')} + ' đ'"></span>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="back-home">
     <a th:href="@{/sanpham}">
-        <button>Về trang chủ</button>
+        <button><i class="bi bi-arrow-left-circle"></i> Về trang chủ</button>
     </a>
 </div>
 

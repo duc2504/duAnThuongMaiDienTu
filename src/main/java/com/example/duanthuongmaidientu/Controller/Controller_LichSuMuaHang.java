@@ -35,7 +35,12 @@ public class Controller_LichSuMuaHang {
                             Model model) {
 
         Users currentUser = (Users) session.getAttribute("currentUser");
-
+        Users user = (Users) session.getAttribute("currentUser");
+        if (user != null) {
+            model.addAttribute("fullname", user.getUsername()); // hoặc user.getFullname() nếu có
+        } else {
+            model.addAttribute("fullname", "Khách");
+        }
         if (currentUser == null) {
             return "redirect:/login";
         }
@@ -114,6 +119,12 @@ public class Controller_LichSuMuaHang {
         Users currentShop = (Users) session.getAttribute("currentUser");
         if (currentShop == null) {
             return "redirect:/login";
+        }
+        Users user = (Users) session.getAttribute("currentUser");
+        if (user != null) {
+            model.addAttribute("fullname", user.getUsername()); // hoặc user.getFullname() nếu có
+        } else {
+            model.addAttribute("fullname", "Khách");
         }
 
         // Danh sách đơn hàng đang chờ duyệt (trạng thái = 0)

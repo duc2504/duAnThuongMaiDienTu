@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản Lý Đơn Hàng</title>
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .main-wrapper {
+            display: flex;
+            align-items: flex-start;
+            padding: 30px;
+            gap: 30px;
+        }
+
+        .sidebar-tabs {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 200px;
+        }
+
+        .sidebar-tabs a {
+            padding: 10px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            background-color: #eee;
+            color: #333;
+            transition: 0.2s;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .sidebar-tabs a.active {
+            background-color: #f53d2d;
+            color: white;
+        }
+
+        .sidebar-tabs a:hover {
+            background-color: #ff5722;
+            color: white;
+        }
+
+        h3 {
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+
+        .thuoc-tinh {
+            font-size: 12px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<h3>📦 Quản lý tất cả đơn hàng</h3>
+
+<div class="main-wrapper">
+    <!-- Tabs bên trái -->
+    <div class="sidebar-tabs">
+        <a th:href="@{/admin}" th:classappend="${trangThai == null} ? 'active' : ''">Tất cả</a>
+        <a th:href="@{/admin(trangThai=1)}" th:classappend="${trangThai == 1} ? 'active' : ''">📦 Chờ lấy hàng</a>
+        <a th:href="@{/admin(trangThai=2)}" th:classappend="${trangThai == 2} ? 'active' : ''">🚚 Đang giao</a>
+        <a th:href="@{/admin(trangThai=3)}" th:classappend="${trangThai == 3} ? 'active' : ''">✅ Hoàn thành</a>
+        <a th:href="@{/admin(trangThai=4)}" th:classappend="${trangThai == 4} ? 'active' : ''">❌ Đã hủy</a>
+        <a th:href="@{/sanpham}">🔙 Về trang chủ</a>
+    </div>
+
+    <!-- Danh sách đơn hàng bên phải -->
+    <div class="order-section w-100">
+        <div th:if="${#lists.isEmpty(danhSachDonHang)}" style="text-align: center; padding: 20px;">
+            <p>🛒 Không có đơn hàng nào.</p>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(danhSachDonHang)}" class="table-responsive">
+            <table class="table table-bordered table-hover align-middle bg-white shadow-sm rounded">
+                <thead class="table-primary text-center">
+                <tr>
+                    <th>Mã Đơn</th>
+                    <th>Ngày Đặt</th>
+                    <th>Thanh Toán</th>
+                    <th>Thông Tin Giao Hàng</th>
+                    <th>Sản Phẩm</th>
+                    <th>Tổng Tiền</th>
+                    <th>Trạng Thái</th>
+                    <th>Hành Động</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="donHang : ${danhSachDonHang}">
+                    <td class="text-center fw-semibold text-danger" th:text="${donHang.maDonHang}"></td>
+                    <td th:text="${donHang.ngayDat}"></td>
+                    <td th:text="${donHang.phuongThucThanhToan}"></td>
+                    <td>
+                        <div><strong>📞</strong> <span th:text="${donHang.soDienThoai}"></span></div>
+                        <div><strong>📍</strong> <span th:text="${donHang.diaChiNhanHang}"></span></div>
+                    </td>
+                    <td>
+                        <div th:each="ct : ${donHang.chiTietDonHangs}" class="mb-2">
+                            <div>
+                                <strong th:text="${ct.bienThe.sanPham.tenSanPham}"></strong>
+                                <div class="thuoc-tinh" th:each="tt : ${ct.bienThe.thuocTinhs}">
+                                    • <span th:text="${tt.tenThuocTinhBienThe}"></span>
+                                </div>
+                                SL: <span th:text="${ct.soLuong}"></span> •
+                                Giá: <span th:text="${#numbers.formatDecimal(ct.donGia, 0, 'POINT', 0, 'NONE')} + ' đ'"></span>
+                            </div>
+                        </div>
+                    </td>
+                    <td th:text="${donHang.giaHienThi}"></td>
+                    <td class="text-success fw-bold" th:text="${donHang.getTrangThaiHienThi()}"></td>
+                    <td class="text-center">
+                        <!-- Nếu trạng thái là 1: Chờ lấy hàng -->
+                        <form th:if="${donHang.trangThai == 1}"
+                              th:action="@{'/admin/giaohang/' + ${donHang.maDonHang}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-success">Giao hàng</button>
+                        </form>
+
+                        <!-- Nếu trạng thái là 2: Đang giao -->
+                        <form th:if="${donHang.trangThai == 2}"
+                              th:action="@{'/admin/hoanthanh/' + ${donHang.maDonHang}}" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-sm btn-primary">Hoàn thành</button>
+                        </form>
+
+                        <form th:if="${donHang.trangThai == 1 || donHang.trangThai == 2}"
+                              th:action="@{'/admin/huy/' + ${donHang.maDonHang}}" method="post" style="display:inline;"
+                              onsubmit="return confirm('Bạn có chắc muốn hủy đơn này không?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Hủy đơn</button>
+                        </form>
+                    </td>
+
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

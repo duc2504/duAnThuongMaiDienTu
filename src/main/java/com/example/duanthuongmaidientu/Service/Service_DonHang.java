@@ -105,6 +105,15 @@ public class Service_DonHang {
         return donHangRepo.findByShopIdAndYear(shopId,  year);
     }
 
+    public List<DonHang> getAllDonHang() {
+        return donHangRepo.findAll();
+    }
 
+    public List<DonHang> getDonHangByTrangThai(Integer trangThai) {
+        return donHangRepo.findByTrangThai(trangThai);
+    }
+    public Optional<DonHang> findById(Integer maDon) {
+        return donHangRepo.findById(maDon);
+    }
 
 }
