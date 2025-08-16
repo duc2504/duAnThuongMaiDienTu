@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý đơn hàng của Shop</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-size: 14px;
+    }
+    .tab-buttons { margin-bottom: 20px; }
+    .tab-buttons .btn { min-width: 150px; }
+    .order-card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .sku-info, .thuoc-tinh, .small-text {
+      font-size: 12px;
+      color: #666;
+    }
+    .badge-trangthai {
+      font-size: 13px;
+      padding: 5px 10px;
+    }
+    .product-item {
+      border-top: 1px solid #eee;
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    .shopee-header {
+      background: linear-gradient(90deg, #f53d2d, #f63);
+      color: white;
+      font-size: 15px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .shopee-header a {
+      color: white;
+      text-decoration: none;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .shopee-header a:hover,
+    .shopee-header .hover-link:hover {
+      color: #ffd5bd;
+      text-decoration: underline;
+    }
+
+    .shopee-header .badge {
+      font-size: 13px;
+      padding: 4px 7px;
+    }
+  </style>
+</head>
+
+
+
+<body>
+<header class="shopee-header px-5 py-3">
+  <div class="d-flex justify-content-between align-items-center top-bar mb-2 flex-wrap">
+    <div class="d-flex align-items-center gap-3 flex-wrap text-white small">
+      <a href="#"><i class="bi bi-shop-window me-1"></i>Kênh Người Bán</a>
+      <a href="#"><i class="bi bi-cloud-arrow-down me-1"></i>Tải ứng dụng</a>
+      <span class="mx-2">|</span>
+      <span>Kết nối:</span>
+      <a href="#"><i class="bi bi-facebook"></i></a>
+      <a href="#"><i class="bi bi-instagram"></i></a>
+      <a href="#"><i class="bi bi-tiktok"></i></a>
+      <a href="#"><i class="bi bi-youtube"></i></a>
+    </div>
+    <div class="d-flex align-items-center gap-3 flex-wrap small text-white">
+      <a href="#"><i class="bi bi-bell-fill me-1"></i>Thông báo</a>
+      <a href="#"><i class="bi bi-question-circle-fill me-1"></i>Hỗ trợ</a>
+      <div><i class="bi bi-translate me-1"></i>Tiếng Việt</div>
+      <a href="#" class="fw-bold text-warning text-decoration-none">
+        <i class="bi bi-person-circle me-1"></i>
+        <span th:text="${fullname}">Tên người dùng</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center flex-wrap">
+    <a th:href="@{/sanpham}" class="brand text-white text-decoration-none fs-3 fw-bold d-flex align-items-center gap-2">
+      <img src="/images/logo.png" alt="" style="height: 40px;"> Shopee Mini
+    </a>
+    <form th:action="@{/sanpham}" method="get" class="d-flex flex-grow-1 mx-4" style="max-width: 800px;">
+      <input type="text" name="tenSanPham" class="form-control me-2 rounded-1 shadow-sm" placeholder="🔍 Tìm kiếm sản phẩm"
+             th:value="${searchName}">
+      <button class="btn btn-light rounded-1 px-4 fw-bold" type="submit">Tìm</button>
+    </form>
+    <div class="d-flex align-items-center gap-4 text-white fs-5">
+      <a href="#" class="text-white position-relative"><i class="bi bi-heart"></i></a>
+      <a th:href="@{/giohang}" class="text-white position-relative">
+        <i class="bi bi-cart3"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">102</span>
+      </a>
+      <a href="#" class="text-white"><i class="bi bi-gear-fill"></i></a>
+    </div>
+  </div>
+</header>
+<br>
+<h3 class="mb-4 text-primary text-center">📦 Quản lý Đơn hàng của Shop</h3>
+
+
+<div class="tab-buttons text-center mb-4">
+  <button id="btn-choDuyet" class="btn btn-outline-primary" onclick="showTab('choDuyet')">🕒 Đơn chờ duyệt</button>
+  <button id="btn-tatCa" class="btn btn-outline-secondary" onclick="showTab('tatCa')">📋 Tất cả đơn</button>
+  <a th:href="@{/sanpham}" class="btn btn-outline-dark">🔙 Quay lại</a>
+</div>
+
+<div id="tab-choDuyet">
+  <div th:if="${#lists.isEmpty(donHangChoDuyet)}" class="alert alert-info">Không có đơn hàng đang chờ duyệt.</div>
+  <div th:each="don : ${donHangChoDuyet}" class="order-card border border-warning">
+    <div class="order-header">
+      <div>
+        <strong>🧾 Mã đơn:</strong> <span th:text="${don.maDonHang}"></span><br>
+        <span class="small-text">🗓 <span th:text="${don.ngayDat}"></span> | 👤 <span th:text="${don.user.username}"></span></span>
+      </div>
+      <span class="badge bg-warning text-dark badge-trangthai" th:text="${don.getTrangThaiHienThi()}">Trạng thái</span>
+    </div>
+    <div th:each="ct : ${don.chiTietDonHangs}" th:if="${ct.bienThe.sanPham.user.id == session.currentUser.id}" class="product-item">
+      <div><strong th:text="${ct.bienThe.sanPham.tenSanPham}"></strong></div>
+      <div class="sku-info">SKU: <span th:text="${ct.bienThe.maSKU}"></span></div>
+      <div th:each="tt : ${ct.bienThe.thuocTinhs}" class="thuoc-tinh">
+        ➤ <span th:text="${tt.tenThuocTinh + ': ' + tt.tenThuocTinhBienThe}"></span>
+      </div>
+      <div class="d-flex justify-content-between">
+        <div>SL: <strong th:text="${ct.soLuong}"></strong></div>
+        <div>💸 <span th:text="${ct.getDonGiaHienThi()}"></span></div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <div><strong>📍 Địa chỉ:</strong> <span th:text="${don.diaChiNhanHang}"></span></div>
+      <div><strong>📞 SĐT:</strong> <span th:text="${don.soDienThoai}"></span></div>
+      <div><strong>💳 Thanh toán:</strong> <span th:text="${don.phuongThucThanhToan}"></span></div>
+      <div><strong>🧮 Tổng tiền:</strong> <span th:text="${don.getGiaHienThi()}"></span></div>
+    </div>
+    <div class="mt-3 d-flex gap-2">
+      <form th:action="@{'/lichsumuahang/shop/duyet/' + ${don.maDonHang}}" method="post">
+        <button type="submit" class="btn btn-success btn-sm">✅ Duyệt</button>
+      </form>
+      <form th:action="@{'/lichsumuahang/shop/huy/' + ${don.maDonHang}}" method="post">
+        <button type="submit" class="btn btn-outline-danger btn-sm">❌ Hủy</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="tab-tatCa" style="display: none;">
+  <div th:if="${#lists.isEmpty(donHangList)}" class="alert alert-info">Không có đơn hàng nào.</div>
+  <form method="get" th:action="@{/lichsumuahang/shop}" class="mb-3 row g-3 align-items-center">
+    <div class="col-auto">
+      <label for="thang" class="col-form-label">Chọn tháng:</label>
+    </div>
+    <div class="col-auto">
+      <select id="thang" name="thang" class="form-select">
+        <option value="">-- Lọc --</option>
+        <option th:each="i : ${#numbers.sequence(1,12)}" th:value="${i}" th:text="${'Tháng ' + i}" th:selected="${i == thang}"></option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <label for="nam" class="col-form-label">Chọn năm:</label>
+    </div>
+    <div class="col-auto">
+      <select id="nam" name="nam" class="form-select">
+        <option value="">-- Lọc --</option>
+        <option th:each="y : ${#numbers.sequence(2020, 2030)}" th:value="${y}" th:text="${y}" th:selected="${y == nam}"></option>
+      </select>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary">Lọc</button>
+    </div>
+    <div class="col-auto">
+      <a th:href="@{/lichsumuahang/shop}" class="btn btn-outline-secondary">🔄 Reset</a>
+    </div>
+  </form>
+  <div th:each="don : ${donHangList}" class="order-card border border-secondary">
+    <div class="order-header">
+      <div>
+        <strong>🧾 Mã đơn:</strong> <span th:text="${don.maDonHang}"></span><br>
+        <span class="small-text">🗓 <span th:text="${don.ngayDat}"></span> | 👤 <span th:text="${don.user.username}"></span></span>
+      </div>
+      <span class="badge bg-secondary badge-trangthai" th:text="${don.getTrangThaiHienThi()}">Trạng thái</span>
+    </div>
+    <div th:each="ct : ${don.chiTietDonHangs}" th:if="${ct.bienThe.sanPham.user.id == session.currentUser.id}" class="product-item">
+      <div><strong th:text="${ct.bienThe.sanPham.tenSanPham}"></strong></div>
+      <div class="sku-info">SKU: <span th:text="${ct.bienThe.maSKU}"></span></div>
+      <div th:each="tt : ${ct.bienThe.thuocTinhs}" class="thuoc-tinh">
+        ➤ <span th:text="${tt.tenThuocTinh + ': ' + tt.tenThuocTinhBienThe}"></span>
+      </div>
+      <div class="d-flex justify-content-between">
+        <div>SL: <strong th:text="${ct.soLuong}"></strong></div>
+        <div>💸 <span th:text="${ct.getDonGiaHienThi()}"></span></div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <div><strong>📍 Địa chỉ:</strong> <span th:text="${don.diaChiNhanHang}"></span></div>
+      <div><strong>📞 SĐT:</strong> <span th:text="${don.soDienThoai}"></span></div>
+      <div><strong>💳 Thanh toán:</strong> <span th:text="${don.phuongThucThanhToan}"></span></div>
+      <div><strong>🧮 Tổng tiền:</strong> <span th:text="${don.getGiaHienThi()}"></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showTab(tab) {
+    document.getElementById('tab-choDuyet').style.display = (tab === 'choDuyet') ? 'block' : 'none';
+    document.getElementById('tab-tatCa').style.display = (tab === 'tatCa') ? 'block' : 'none';
+    document.getElementById('btn-choDuyet').classList.toggle('btn-primary', tab === 'choDuyet');
+    document.getElementById('btn-choDuyet').classList.toggle('btn-outline-primary', tab !== 'choDuyet');
+    document.getElementById('btn-tatCa').classList.toggle('btn-secondary', tab === 'tatCa');
+    document.getElementById('btn-tatCa').classList.toggle('btn-outline-secondary', tab !== 'tatCa');
+    localStorage.setItem("selectedTab", tab);
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    const savedTab = localStorage.getItem("selectedTab") || "choDuyet";
+    showTab(savedTab);
+  });
+</script>
+
+</body>
+</html>
